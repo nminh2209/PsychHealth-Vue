@@ -1,11 +1,7 @@
 # PsychHealth Vue - Mental Health Platform
 ## Comprehensive Project Report
 
-**Course:** COS30043 - Interface Innovation  
-**Student:** [Your Name]  
-**Date:** August 2, 2025  
-**Project Type:** Mental Health Web Application  
-**Grade Target:** High Distinction (HD)
+
 
 ---
 
