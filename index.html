@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PsychHealth - Mental Health Community Platform</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Segoe+UI:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+            <div class="container">
+                <a class="navbar-brand fw-bold fs-3" href="#" @click="currentView = 'home'">
+                    PsychHealth
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" :class="{active: currentView === 'home'}" 
+                               href="#" @click="currentView = 'home'">
+                                Trang Chủ
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" :class="{active: currentView === 'tests'}" 
+                               href="#" @click="currentView = 'tests'">
+                                Kiểm Tra
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" :class="{active: currentView === 'community'}" 
+                               href="#" @click="currentView = 'community'">
+                                Cộng Đồng
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" :class="{active: currentView === 'resources'}" 
+                               href="#" @click="currentView = 'resources'">
+                                Tài Nguyên
+                            </a>
+                        </li>
+                    </ul>
+
+                    <ul class="navbar-nav">
+                        <li v-if="!isAuthenticated" class="nav-item">
+                            <a class="nav-link btn btn-outline-light me-2" href="#" @click="navigateToView('login')">
+                                Đăng Nhập
+                            </a>
+                        </li>
+                        <li v-if="!isAuthenticated" class="nav-item">
+                            <a class="nav-link btn btn-gradient px-3" href="#" @click="navigateToView('register')">
+                                Đăng Ký
+                            </a>
+                        </li>
+                        <li v-if="isAuthenticated" class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                <i class="fas fa-user-circle me-2"></i>{{ currentUser.name }}
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#" @click="currentView = 'profile'">Hồ Sơ</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#" @click="logout">Đăng Xuất</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main>
+            <!-- Home View -->
+            <div v-if="currentView === 'home'" class="fade-in">
+                <!-- Hero Section -->
+                <section class="hero-section">
+                    <div class="container">
+                        <div class="row align-items-center min-vh-100">
+                            <div class="col-lg-6">
+                                <div class="hero-content">
+                                    <h1 class="hero-title">Sức Khỏe Tinh Thần</h1>
+                                    <p class="hero-subtitle">
+                                        Sức khỏe tinh thần đề cập đến trạng thái cảm xúc, tâm lý và xã hội của mỗi người. 
+                                        Nó phản ánh khả năng quản lý căng thẳng, xây dựng mối quan hệ, và đưa ra những 
+                                        quyết định sáng suốt trong cuộc sống.
+                                    </p>
+                                    <div class="d-flex flex-wrap gap-3">
+                                        <button class="btn btn-gradient" @click="currentView = 'tests'">
+                                            Bắt Đầu Kiểm Tra
+                                        </button>
+                                        <button class="btn btn-outline-light" @click="currentView = 'resources'">
+                                            Tài Nguyên Hỗ Trợ
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="hero-image-container">
+                                    <img src="https://images.unsplash.com/photo-1559757175-0eb30cd8c063?w=600&h=400&fit=crop&crop=center" 
+                                         alt="Mental Health Support" class="img-fluid rounded-3 shadow-lg">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Mental Health Conditions -->
+                <section class="py-5">
+                    <div class="container">
+                        <div class="text-center mb-5">
+                            <h2 class="display-5 fw-bold mb-4">Bệnh Lý Tinh Thần Toàn Cầu</h2>
+                            <p class="lead text-muted">Tìm hiểu về các rối loạn tinh thần phổ biến</p>
+                        </div>
+
+                        <div class="row g-4">
+                            <div v-for="condition in mentalHealthConditions" :key="condition.id" class="col-lg-4 col-md-6">
+                                <div class="condition-card h-100">
+                                    <div class="condition-image" :style="{ backgroundImage: 'url(' + condition.image + ')' }"></div>
+                                    <div class="condition-content">
+                                        <h3 class="condition-title">{{ condition.title }}</h3>
+                                        <p class="condition-description">{{ condition.description }}</p>
+                                        <button class="btn btn-gradient" @click="showConditionDetails(condition)">
+                                            Tìm Hiểu Thêm
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Tests Section -->
+                <section class="py-5 bg-light">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-4 mb-4">
+                                <h2 class="display-6 fw-bold mb-4">Các Bài Kiểm Tra</h2>
+                                <p class="lead mb-4">Đánh giá sức khỏe tinh thần của bạn với các bài kiểm tra khoa học</p>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i>Phát hiện sớm</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i>Tự nhận thức</li>
+                                    <li><i class="fas fa-check-circle text-primary me-2"></i>Hướng dẫn hỗ trợ</li>
+                                </ul>
+                            </div>
+                            <div class="col-lg-8">
+                                <div class="row g-4">
+                                    <div v-for="test in mentalHealthTests" :key="test.id" class="col-md-6">
+                                        <div class="test-card h-100">
+                                            <i :class="test.icon" class="fa-3x mb-3"></i>
+                                            <h4 class="mb-3">{{ test.title }}</h4>
+                                            <p class="mb-4">{{ test.description }}</p>
+                                            <button class="btn btn-gradient btn-lg" @click="startTest(test.type)">
+                                                Bắt Đầu Ngay
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- FAQ Section -->
+                <section class="py-5">
+                    <div class="container">
+                        <div class="text-center mb-5">
+                            <h2 class="display-5 fw-bold">Câu Hỏi Thường Gặp</h2>
+                        </div>
+                        
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <div class="accordion" id="faqAccordion">
+                                    <div v-for="(faq, index) in faqs" :key="faq.id" class="accordion-item border-0 mb-3">
+                                        <h3 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button" 
+                                                    :data-bs-target="'#faq' + index" data-bs-toggle="collapse">
+                                                {{ faq.question }}
+                                            </button>
+                                        </h3>
+                                        <div :id="'faq' + index" class="accordion-collapse collapse" 
+                                             data-bs-parent="#faqAccordion">
+                                            <div class="accordion-body">{{ faq.answer }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Tests View -->
+            <div v-if="currentView === 'tests'" class="fade-in">
+                <div class="container py-5">
+                    <h1 class="display-4 text-center mb-5">Bài Kiểm Tra Sức Khỏe Tinh Thần</h1>
+                    
+                    <!-- Test Selection -->
+                    <div v-if="!currentTest" class="row g-4">
+                        <div v-for="test in mentalHealthTests" :key="test.id" class="col-md-6">
+                            <div class="card h-100 test-selection-card">
+                                <div class="card-body text-center p-4">
+                                    <i :class="test.icon" class="fa-4x mb-4 text-primary"></i>
+                                    <h3 class="card-title">{{ test.title }}</h3>
+                                    <p class="card-text">{{ test.description }}</p>
+                                    <button class="btn btn-gradient" @click="startTest(test.type)">
+                                        Bắt Đầu Kiểm Tra
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Anxiety Test -->
+                    <div v-if="currentTest === 'anxiety'" class="test-container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <div class="card">
+                                    <div class="card-header bg-primary text-white">
+                                        <h3 class="mb-0">Bài Kiểm Tra Lo Âu (GAD-7)</h3>
+                                        <p class="mb-0">Câu hỏi {{ currentQuestionIndex + 1 }} / {{ anxietyQuestions.length }}</p>
+                                    </div>
+                                    <div class="card-body p-4">
+                                        <div v-if="currentQuestionIndex < anxietyQuestions.length">
+                                            <h4 class="mb-4">{{ anxietyQuestions[currentQuestionIndex].question }}</h4>
+                                            <div class="row g-3">
+                                                <div v-for="(option, optionIndex) in anxietyQuestions[currentQuestionIndex].options" 
+                                                     :key="optionIndex" class="col-12">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" 
+                                                               :name="'question' + currentQuestionIndex"
+                                                               :value="optionIndex"
+                                                               v-model="testResponses[currentQuestionIndex]">
+                                                        <label class="form-check-label">{{ option }}</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-between mt-4">
+                                                <button v-if="currentQuestionIndex > 0" class="btn btn-secondary" 
+                                                        @click="previousQuestion">Trước</button>
+                                                <button v-if="currentQuestionIndex < anxietyQuestions.length - 1" 
+                                                        class="btn btn-primary ms-auto" @click="nextQuestion">Tiếp</button>
+                                                <button v-if="currentQuestionIndex === anxietyQuestions.length - 1" 
+                                                        class="btn btn-success ms-auto" @click="finishTest">Hoàn Thành</button>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Test Results -->
+                                        <div v-if="showResults" class="test-results">
+                                            <div class="text-center mb-4">
+                                                <h3 class="text-primary">Kết Quả Kiểm Tra</h3>
+                                                <div class="result-score">
+                                                    <span class="display-3 fw-bold" :class="getScoreClass(testScore)">
+                                                        {{ testScore }}/21
+                                                    </span>
+                                                </div>
+                                                <h4 class="mt-3" :class="getScoreClass(testScore)">{{ getScoreInterpretation(testScore) }}</h4>
+                                            </div>
+                                            <div class="alert" :class="getAlertClass(testScore)">
+                                                <p class="mb-0">{{ getScoreRecommendation(testScore) }}</p>
+                                            </div>
+                                            <div class="text-center">
+                                                <button class="btn btn-primary me-3" @click="resetTest">Làm Lại</button>
+                                                <button class="btn btn-outline-primary" @click="currentView = 'resources'">
+                                                    Tìm Tài Nguyên Hỗ Trợ
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- All Tests -->
+                    <div v-if="currentTest && currentTest !== 'anxiety' && currentTest !== 'depression'" class="test-container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <div class="card">
+                                    <div class="card-header bg-info text-white">
+                                        <h3 class="mb-0">{{ mentalHealthTests.find(t => t.type === currentTest)?.title }}</h3>
+                                        <p class="mb-0">Câu hỏi {{ currentQuestionIndex + 1 }} / {{ getCurrentQuestions().length }}</p>
+                                    </div>
+                                    <div class="card-body p-4">
+                                        <div v-if="currentQuestionIndex < getCurrentQuestions().length">
+                                            <h4 class="mb-4">{{ getCurrentQuestions()[currentQuestionIndex].question }}</h4>
+                                            <div class="row g-3">
+                                                <div v-for="(option, optionIndex) in getCurrentQuestions()[currentQuestionIndex].options" 
+                                                     :key="optionIndex" class="col-12">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" 
+                                                               :name="'question' + currentQuestionIndex"
+                                                               :value="optionIndex"
+                                                               v-model="testResponses[currentQuestionIndex]">
+                                                        <label class="form-check-label">{{ option }}</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-between mt-4">
+                                                <button v-if="currentQuestionIndex > 0" class="btn btn-secondary" 
+                                                        @click="previousQuestion">Trước</button>
+                                                <button v-if="currentQuestionIndex < getCurrentQuestions().length - 1" 
+                                                        class="btn btn-info ms-auto" @click="nextQuestion">Tiếp</button>
+                                                <button v-if="currentQuestionIndex === getCurrentQuestions().length - 1" 
+                                                        class="btn btn-success ms-auto" @click="finishTest">Hoàn Thành</button>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Test Results -->
+                                        <div v-if="showResults" class="test-results">
+                                            <div class="text-center mb-4">
+                                                <h3 class="text-info">Kết Quả Kiểm Tra</h3>
+                                                <div class="result-score">
+                                                    <span class="display-3 fw-bold" :class="getScoreClass(testScore)">
+                                                        {{ testScore }}/{{ getCurrentQuestions().length * (getCurrentQuestions()[0]?.options.length - 1 || 4) }}
+                                                    </span>
+                                                </div>
+                                                <h4 class="mt-3" :class="getScoreClass(testScore)">{{ getScoreInterpretation(testScore) }}</h4>
+                                            </div>
+                                            <div class="alert" :class="getAlertClass(testScore)">
+                                                <p class="mb-0">{{ getTestRecommendation(testScore) }}</p>
+                                            </div>
+                                            <div class="text-center">
+                                                <button class="btn btn-info me-3" @click="resetTest">Làm Lại</button>
+                                                <button class="btn btn-outline-info" @click="currentView = 'resources'">
+                                                    Tìm Tài Nguyên Hỗ Trợ
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Depression Test -->
+                    <div v-if="currentTest === 'depression'" class="test-container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <div class="card">
+                                    <div class="card-header bg-success text-white">
+                                        <h3 class="mb-0">Bài Kiểm Tra Trầm Cảm (PHQ-9)</h3>
+                                        <p class="mb-0">Câu hỏi {{ currentQuestionIndex + 1 }} / {{ depressionQuestions.length }}</p>
+                                    </div>
+                                    <div class="card-body p-4">
+                                        <div v-if="currentQuestionIndex < depressionQuestions.length">
+                                            <h4 class="mb-4">{{ depressionQuestions[currentQuestionIndex].question }}</h4>
+                                            <div class="row g-3">
+                                                <div v-for="(option, optionIndex) in depressionQuestions[currentQuestionIndex].options" 
+                                                     :key="optionIndex" class="col-12">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" 
+                                                               :name="'question' + currentQuestionIndex"
+                                                               :value="optionIndex"
+                                                               v-model="testResponses[currentQuestionIndex]">
+                                                        <label class="form-check-label">{{ option }}</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-between mt-4">
+                                                <button v-if="currentQuestionIndex > 0" class="btn btn-secondary" 
+                                                        @click="previousQuestion">Trước</button>
+                                                <button v-if="currentQuestionIndex < depressionQuestions.length - 1" 
+                                                        class="btn btn-success ms-auto" @click="nextQuestion">Tiếp</button>
+                                                <button v-if="currentQuestionIndex === depressionQuestions.length - 1" 
+                                                        class="btn btn-warning ms-auto" @click="finishTest">Hoàn Thành</button>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Test Results -->
+                                        <div v-if="showResults" class="test-results">
+                                            <div class="text-center mb-4">
+                                                <h3 class="text-success">Kết Quả Kiểm Tra</h3>
+                                                <div class="result-score">
+                                                    <span class="display-3 fw-bold" :class="getScoreClass(testScore)">
+                                                        {{ testScore }}/27
+                                                    </span>
+                                                </div>
+                                                <h4 class="mt-3" :class="getScoreClass(testScore)">{{ getDepressionInterpretation(testScore) }}</h4>
+                                            </div>
+                                            <div class="alert" :class="getAlertClass(testScore)">
+                                                <p class="mb-0">{{ getDepressionRecommendation(testScore) }}</p>
+                                            </div>
+                                            <div class="text-center">
+                                                <button class="btn btn-success me-3" @click="resetTest">Làm Lại</button>
+                                                <button class="btn btn-outline-success" @click="currentView = 'resources'">
+                                                    Tìm Tài Nguyên Hỗ Trợ
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Community View -->
+            <div v-if="currentView === 'community'" class="fade-in">
+                <div class="container py-5">
+                    <h1 class="display-4 text-center mb-5">Cộng Đồng Hỗ Trợ</h1>
+                    
+                    <!-- Search and Filter -->
+                    <div class="row mb-4">
+                        <div class="col-md-8">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Tìm kiếm bài viết..."
+                                       v-model="searchQuery" @input="filterPosts">
+                                <button class="btn btn-primary" type="button">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <select class="form-select" v-model="selectedCategory" @change="filterPosts">
+                                <option value="">Tất cả chủ đề</option>
+                                <option value="anxiety">Lo âu</option>
+                                <option value="depression">Trầm cảm</option>
+                                <option value="stress">Căng thẳng</option>
+                                <option value="support">Hỗ trợ</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- New Post Form (for authenticated users) -->
+                    <div v-if="isAuthenticated" class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Chia sẻ câu chuyện của bạn</h5>
+                            <form @submit.prevent="createPost">
+                                <div class="mb-3">
+                                    <input type="text" class="form-control" placeholder="Tiêu đề bài viết..."
+                                           v-model="newPost.title" required>
+                                </div>
+                                <div class="mb-3">
+                                    <textarea class="form-control" rows="4" placeholder="Nội dung..."
+                                              v-model="newPost.content" required></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <select class="form-select" v-model="newPost.category" required>
+                                        <option value="">Chọn chủ đề</option>
+                                        <option value="anxiety">Lo âu</option>
+                                        <option value="depression">Trầm cảm</option>
+                                        <option value="stress">Căng thẳng</option>
+                                        <option value="support">Hỗ trợ</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-gradient">Đăng bài</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Community Posts -->
+                    <div class="row">
+                        <div v-for="post in filteredPosts" :key="post.id" class="col-12 mb-4">
+                            <div class="card community-post">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <img :src="post.author.avatar" class="rounded-circle me-3" width="40" height="40">
+                                        <div>
+                                            <h6 class="mb-0">{{ post.author.name }}</h6>
+                                            <small class="text-muted">{{ formatDate(post.createdAt) }}</small>
+                                        </div>
+                                        <span class="badge bg-primary ms-auto">{{ getCategoryName(post.category) }}</span>
+                                    </div>
+                                    <h5 class="card-title">{{ post.title }}</h5>
+                                    <p class="card-text">{{ post.content }}</p>
+                                    <div class="d-flex align-items-center">
+                                        <button class="btn btn-sm btn-outline-primary me-2" 
+                                                @click="toggleLike(post)" :class="{active: post.liked}">
+                                            <i class="fas fa-heart"></i> {{ post.likes }}
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-secondary me-2"
+                                                @click="toggleComments(post)">
+                                            <i class="fas fa-comment"></i> {{ post.comments }}
+                                        </button>
+                                    </div>
+                                    
+                                    <!-- Comments Section -->
+                                    <div v-if="showComments && showComments[post.id]" class="mt-3 border-top pt-3">
+                                        <h6>Bình luận</h6>
+                                        
+                                        <!-- Comment Form (for authenticated users) -->
+                                        <div v-if="isAuthenticated" class="mb-3">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" 
+                                                       placeholder="Viết bình luận..."
+                                                       :value="newComment && newComment[post.id] || ''"
+                                                       @input="updateCommentInput(post.id, $event.target.value)"
+                                                       @keyup.enter="createComment(post.id)">
+                                                <button class="btn btn-primary" type="button"
+                                                        @click="createComment(post.id)">
+                                                    Gửi
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Comments List -->
+                                        <div v-if="postComments && postComments[post.id] && postComments[post.id].length > 0">
+                                            <div v-for="comment in postComments[post.id]" :key="comment.id" 
+                                                 class="d-flex mb-2 p-2 bg-light rounded">
+                                                <img :src="`https://via.placeholder.com/30x30/28a745/FFFFFF?text=${comment.author_name ? comment.author_name.charAt(0) : 'A'}`" 
+                                                     class="rounded-circle me-2" width="30" height="30">
+                                                <div class="flex-grow-1">
+                                                    <small class="fw-bold">{{ comment.author_name || 'Anonymous' }}</small>
+                                                    <small class="text-muted ms-2">{{ formatDate(comment.created_at) }}</small>
+                                                    <p class="mb-0 mt-1">{{ comment.content }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div v-else class="text-muted text-center py-2">
+                                            Chưa có bình luận nào. Hãy là người đầu tiên bình luận!
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <nav v-if="totalPages > 1">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item" :class="{disabled: currentPage === 1}">
+                                <button class="page-link" @click="changePage(currentPage - 1)">Trước</button>
+                            </li>
+                            <li v-for="page in totalPages" :key="page" class="page-item" 
+                                :class="{active: currentPage === page}">
+                                <button class="page-link" @click="changePage(page)">{{ page }}</button>
+                            </li>
+                            <li class="page-item" :class="{disabled: currentPage === totalPages}">
+                                <button class="page-link" @click="changePage(currentPage + 1)">Sau</button>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Login View -->
+            <div v-if="currentView === 'login'" class="fade-in">
+                <div class="container py-5">
+                    <div class="row justify-content-center">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body p-5">
+                                    <h2 class="text-center mb-4">Đăng Nhập</h2>
+                                    <form @submit.prevent="handleLogin">
+                                        <div class="mb-3">
+                                            <label class="form-label">Email</label>
+                                            <input type="email" class="form-control" v-model="loginForm.email" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Mật khẩu</label>
+                                            <input type="password" class="form-control" v-model="loginForm.password" required>
+                                        </div>
+                                        <button type="submit" class="btn btn-gradient w-100">Đăng Nhập</button>
+                                    </form>
+                                    <div class="text-center mt-3">
+                                        <a href="#" @click="navigateToView('register')">Chưa có tài khoản? Đăng ký</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Register View -->
+            <div v-if="currentView === 'register'" class="fade-in">
+                <div class="container py-5">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-body p-5">
+                                    <h2 class="text-center mb-4">Đăng Ký Tài Khoản</h2>
+                                    <form @submit.prevent="handleRegister">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Họ và tên</label>
+                                                <input type="text" class="form-control" v-model="registerForm.name" required>
+                                                <div v-if="registerErrors.name" class="text-danger">{{ registerErrors.name }}</div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Email</label>
+                                                <input type="email" class="form-control" v-model="registerForm.email" required>
+                                                <div v-if="registerErrors.email" class="text-danger">{{ registerErrors.email }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Mật khẩu</label>
+                                                <input type="password" class="form-control" v-model="registerForm.password" required>
+                                                <div v-if="registerErrors.password" class="text-danger">{{ registerErrors.password }}</div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Xác nhận mật khẩu</label>
+                                                <input type="password" class="form-control" v-model="registerForm.confirmPassword" required>
+                                                <div v-if="registerErrors.confirmPassword" class="text-danger">{{ registerErrors.confirmPassword }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Số điện thoại</label>
+                                            <input type="tel" class="form-control" v-model="registerForm.phone">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Tuổi</label>
+                                            <select class="form-select" v-model="registerForm.age" required>
+                                                <option value="">Chọn độ tuổi</option>
+                                                <option value="18-25">18-25</option>
+                                                <option value="26-35">26-35</option>
+                                                <option value="36-45">36-45</option>
+                                                <option value="46-55">46-55</option>
+                                                <option value="55+">55+</option>
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="btn btn-gradient w-100">Đăng Ký</button>
+                                    </form>
+                                    <div class="text-center mt-3">
+                                        <a href="#" @click="navigateToView('login')">Đã có tài khoản? Đăng nhập</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile View -->
+            <div v-if="currentView === 'profile'" class="fade-in">
+                <div class="container py-5">
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <img :src="`https://via.placeholder.com/100x100/21D4FD/FFFFFF?text=${currentUser?.name?.charAt(0) || 'U'}`" 
+                                         class="rounded-circle mb-3" width="100" height="100">
+                                    <h5 v-if="userProfile">{{ userProfile.name }}</h5>
+                                    <h5 v-else-if="currentUser">{{ currentUser.name }}</h5>
+                                    <p class="text-muted" v-if="userProfile">{{ userProfile.email }}</p>
+                                    <p class="text-muted" v-else-if="currentUser">{{ currentUser.email }}</p>
+                                    <div class="row text-center mt-4">
+                                        <div class="col-4">
+                                            <h6 class="mb-0" v-if="userProfile">{{ userProfile.posts_count || 0 }}</h6>
+                                            <h6 class="mb-0" v-else>0</h6>
+                                            <small class="text-muted">Bài viết</small>
+                                        </div>
+                                        <div class="col-4">
+                                            <h6 class="mb-0" v-if="userProfile">{{ userProfile.comments_count || 0 }}</h6>
+                                            <h6 class="mb-0" v-else>0</h6>
+                                            <small class="text-muted">Bình luận</small>
+                                        </div>
+                                        <div class="col-4">
+                                            <h6 class="mb-0" v-if="userProfile">{{ userProfile.tests_taken || 0 }}</h6>
+                                            <h6 class="mb-0" v-else>0</h6>
+                                            <small class="text-muted">Bài test</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-8">
+                            <div class="row g-4">
+                                <!-- Profile Information -->
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5 class="mb-0">Thông tin cá nhân</h5>
+                                        </div>
+                                        <div class="card-body" v-if="userProfile || currentUser">
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label fw-bold">Họ và tên</label>
+                                                    <p class="form-control-plaintext">{{ userProfile?.name || currentUser?.name || 'Chưa cập nhật' }}</p>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label fw-bold">Email</label>
+                                                    <p class="form-control-plaintext">{{ userProfile?.email || currentUser?.email || 'Chưa cập nhật' }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label fw-bold">Tuổi</label>
+                                                    <p class="form-control-plaintext">{{ userProfile?.age || 'Chưa cập nhật' }}</p>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label fw-bold">Giới tính</label>
+                                                    <p class="form-control-plaintext">
+                                                        {{ userProfile?.gender === 'male' ? 'Nam' : 
+                                                           userProfile?.gender === 'female' ? 'Nữ' : 'Khác' }}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="mb-0">
+                                                <label class="form-label fw-bold">Ngày tham gia</label>
+                                                <p class="form-control-plaintext">{{ userProfile ? formatDate(new Date(userProfile.created_at)) : 'Chưa cập nhật' }}</p>
+                                            </div>
+                                        </div>
+                                        <div class="card-body" v-else>
+                                            <div class="text-center text-muted">
+                                                <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
+                                                <p>Đang tải thông tin...</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- User Posts -->
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5 class="mb-0">Bài viết của tôi</h5>
+                                        </div>
+                                        <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                                            <div v-if="userPosts && userPosts.length > 0">
+                                                <div v-for="post in userPosts" :key="post.id" 
+                                                     class="border rounded p-3 mb-3">
+                                                    <div class="d-flex justify-content-between align-items-start">
+                                                        <h6 class="mb-1">{{ post.title }}</h6>
+                                                        <span class="badge bg-primary">{{ getCategoryName(post.category) }}</span>
+                                                    </div>
+                                                    <p class="text-muted mb-2">{{ post.content.substring(0, 100) }}...</p>
+                                                    <small class="text-muted">
+                                                        {{ formatDate(post.created_at) }} • 
+                                                        <i class="fas fa-comment"></i> {{ post.comments_count || 0 }} bình luận
+                                                    </small>
+                                                </div>
+                                            </div>
+                                            <div v-else class="text-center text-muted py-4">
+                                                <i class="fas fa-edit fa-2x mb-3"></i>
+                                                <p>Bạn chưa có bài viết nào</p>
+                                                <button class="btn btn-gradient" @click="currentView = 'community'">
+                                                    Tạo bài viết đầu tiên
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resources View -->
+            <div v-if="currentView === 'resources'" class="fade-in">
+                <div class="container py-5">
+                    <div class="d-flex justify-content-between align-items-center mb-5">
+                        <h1 class="display-4 text-center flex-grow-1">Tài Nguyên Hỗ Trợ</h1>
+                        <button class="btn btn-outline-primary" @click="refreshExternalData()" 
+                                :disabled="isLoadingQuotes || isLoadingWeather || isLoadingHotlines">
+                            <i class="fas fa-sync-alt" :class="{ 'fa-spin': isLoadingQuotes || isLoadingWeather || isLoadingHotlines }"></i>
+                            Làm mới
+                        </button>
+                    </div>
+                    
+                    <!-- External API Content - HD Requirement -->
+                    <div class="row mb-5">
+                        <!-- Daily Inspiration Quote -->
+                        <div class="col-lg-10 mx-auto mb-4">
+                            <div class="card border-0 shadow-lg quote-card">
+                                <div class="card-body p-5">
+                                    <h5 class="card-title text-center mb-4 text-white">
+                                        <i class="fas fa-quote-left me-2 quote-icon"></i>Cảm Hứng Hôm Nay
+                                    </h5>
+                                    <div v-if="isLoadingQuotes" class="text-center">
+                                        <div class="spinner-border text-light" role="status">
+                                            <span class="visually-hidden">Đang tải...</span>
+                                        </div>
+                                    </div>
+                                    <div v-else-if="dailyQuote" class="text-center">
+                                        <blockquote class="blockquote mb-4">
+                                            <p class="quote-text fs-4 fst-italic text-white mb-0">
+                                                "{{ dailyQuote.content }}"
+                                            </p>
+                                        </blockquote>
+                                        <footer class="blockquote-footer border-0">
+                                            <cite class="quote-author">{{ dailyQuote.author }}</cite>
+                                        </footer>
+                                        <div class="mt-3 quote-tags" v-if="dailyQuote.tags && dailyQuote.tags.length > 0">
+                                            <span v-for="tag in dailyQuote.tags" :key="tag" class="badge me-1">
+                                                {{ tag }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div v-else-if="quoteError" class="text-center">
+                                        <p class="text-warning mb-0">{{ quoteError }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Weather & Mood Connection -->
+                    <div class="row mb-5" v-if="weatherData">
+                        <div class="col-lg-6 mx-auto">
+                            <div class="card border-0 shadow">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">
+                                        <i class="fas fa-cloud-sun me-2 text-warning"></i>Thời Tiết & Tâm Trạng
+                                    </h5>
+                                    <div v-if="isLoadingWeather" class="text-center">
+                                        <div class="spinner-border text-primary" role="status"></div>
+                                    </div>
+                                    <div v-else>
+                                        <div class="d-flex justify-content-center align-items-center mb-3">
+                                            <span class="display-6 text-primary me-2">{{ weatherData.temperature }}°C</span>
+                                            <span class="text-muted text-capitalize">{{ weatherData.description }}</span>
+                                        </div>
+                                        <p class="text-muted">{{ weatherData.mood_impact }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Daily Affirmation Section -->
+                    <div class="row mb-5" v-if="dailyAffirmation">
+                        <div class="col-lg-8 mx-auto">
+                            <div class="card border-0 shadow" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                <div class="card-body text-center p-4">
+                                    <h5 class="card-title text-white mb-3">
+                                        <i class="fas fa-heart me-2"></i>Khẳng Định Tích Cực Hôm Nay
+                                    </h5>
+                                    <div v-if="isLoadingAffirmation" class="text-center">
+                                        <div class="spinner-border text-light" role="status">
+                                            <span class="visually-hidden">Đang tải...</span>
+                                        </div>
+                                    </div>
+                                    <div v-else class="text-white">
+                                        <p class="fs-5 mb-3 fw-light" style="line-height: 1.6;">
+                                            {{ dailyAffirmation.content }}
+                                        </p>
+                                        <small class="text-white-50">{{ dailyAffirmation.source }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Motivational Quotes Carousel -->
+                    <div class="row mb-5" v-if="motivationalQuotes.length > 0">
+                        <div class="col-12">
+                            <h4 class="text-center mb-4">Động Lực Tích Cực</h4>
+                            <div id="quotesCarousel" class="carousel slide" data-bs-ride="carousel">
+                                <div class="carousel-inner">
+                                    <div v-for="(quote, index) in motivationalQuotes" :key="index" 
+                                         class="carousel-item" :class="{ active: index === 0 }">
+                                        <div class="card border-0 shadow-sm mx-auto" style="max-width: 600px;">
+                                            <div class="card-body text-center p-4">
+                                                <blockquote class="blockquote">
+                                                    <p class="mb-3">"{{ quote.content }}"</p>
+                                                    <footer class="blockquote-footer">
+                                                        <cite>{{ quote.author }}</cite>
+                                                    </footer>
+                                                </blockquote>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#quotesCarousel" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#quotesCarousel" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Search Resources -->
+                    <div class="row mb-4">
+                        <div class="col-md-8 mx-auto">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Tìm kiếm tài nguyên..."
+                                       v-model="resourceSearchQuery" @input="filterResources">
+                                <button class="btn btn-primary" type="button">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resource Categories -->
+                    <div class="row g-4">
+                        <div v-for="resource in filteredResources" :key="resource.id" class="col-lg-4 col-md-6">
+                            <div class="card h-100 resource-card">
+                                <div class="card-body">
+                                    <div class="text-center mb-3">
+                                        <i :class="resource.icon" class="fa-3x text-primary"></i>
+                                    </div>
+                                    <h5 class="card-title text-center">{{ resource.title }}</h5>
+                                    <p class="card-text">{{ resource.description }}</p>
+                                    <ul class="list-unstyled">
+                                        <li v-for="item in resource.items" :key="item" class="mb-2">
+                                            <i class="fas fa-check-circle text-success me-2"></i>{{ item }}
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="card-footer bg-transparent">
+                                    <button class="btn btn-gradient w-100" @click="openResource(resource)">
+                                        Xem Chi Tiết
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Emergency Contacts with External API -->
+                    <div class="row mt-5">
+                        <div class="col-12">
+                            <h4 class="text-center mb-4">
+                                <i class="fas fa-phone-alt me-2 text-danger"></i>Liên Hệ Khẩn Cấp
+                            </h4>
+                            
+                            <div v-if="isLoadingHotlines" class="text-center mb-4">
+                                <div class="spinner-border text-danger" role="status">
+                                    <span class="visually-hidden">Đang tải thông tin khẩn cấp...</span>
+                                </div>
+                            </div>
+                            
+                            <div v-else class="row g-3 mb-4">
+                                <div v-for="hotline in crisisHotlines" :key="hotline.id" class="col-md-4">
+                                    <div class="card border-0 shadow-sm h-100" 
+                                         :class="{'border-danger': hotline.type === 'emergency'}">
+                                        <div class="card-body text-center">
+                                            <div class="mb-3">
+                                                <i class="fas fa-phone fa-2x" 
+                                                   :class="hotline.type === 'emergency' ? 'text-danger' : 'text-primary'"></i>
+                                            </div>
+                                            <h6 class="card-title">{{ hotline.name }}</h6>
+                                            <p class="card-text text-muted small">{{ hotline.description }}</p>
+                                            <a :href="'tel:' + hotline.number" 
+                                               class="btn btn-sm" 
+                                               :class="hotline.type === 'emergency' ? 'btn-danger' : 'btn-primary'">
+                                                <i class="fas fa-phone me-1"></i>{{ hotline.number }}
+                                            </a>
+                                            <p class="small text-muted mt-2 mb-0">{{ hotline.availability }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="alert alert-danger">
+                                <h4 class="alert-heading"><i class="fas fa-exclamation-triangle me-2"></i>Lưu Ý Quan Trọng</h4>
+                                <p class="mb-2">Nếu bạn đang gặp khủng hoảng tâm lý nghiêm trọng, hãy liên hệ ngay:</p>
+                                <p class="mb-2"><strong>Đường dây nóng quốc gia:</strong> <a href="tel:113" class="text-white"><u>113</u></a></p>
+                                <p class="mb-2"><strong>Tư vấn tâm lý:</strong> <a href="tel:18001567" class="text-white"><u>1800 1567</u></a></p>
+                                <p class="mb-0"><strong>Cấp cứu:</strong> <a href="tel:115" class="text-white"><u>115</u></a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="text-white py-5 mt-5">
+            <div class="container">
+                <div class="row g-4">
+                    <div class="col-lg-4">
+                        <h5 class="fw-bold mb-3">PsychHealth</h5>
+                        <p>Cộng đồng hỗ trợ sức khỏe tinh thần - Nơi kết nối, chia sẻ và chăm sóc lẫn nhau.</p>
+                        <div class="social-links">
+                            <a href="#" class="social-icon" style="background: #1877F2;"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="social-icon" style="background: #1DA1F2;"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="social-icon" style="background: #E4405F;"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-6">
+                        <h6 class="fw-bold mb-3">Liên Kết</h6>
+                        <ul class="list-unstyled">
+                            <li><a href="#" class="text-white-50" @click="currentView = 'home'">Trang Chủ</a></li>
+                            <li><a href="#" class="text-white-50" @click="currentView = 'tests'">Kiểm Tra</a></li>
+                            <li><a href="#" class="text-white-50" @click="currentView = 'community'">Cộng Đồng</a></li>
+                            <li><a href="#" class="text-white-50" @click="currentView = 'resources'">Tài Nguyên</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <h6 class="fw-bold mb-3">Hỗ Trợ</h6>
+                        <ul class="list-unstyled">
+                            <li><a href="#" class="text-white-50" @click="currentView = 'resources'">Tài Nguyên</a></li>
+                            <li><a href="#" class="text-white-50">Câu Hỏi Thường Gặp</a></li>
+                            <li><a href="#" class="text-white-50">Liên Hệ</a></li>
+                            <li><a href="#" class="text-white-50">Chính Sách Bảo Mật</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-3">
+                        <h6 class="fw-bold mb-3">Liên Hệ</h6>
+                        <p class="mb-2"><i class="fas fa-envelope me-2"></i>support@psychhealth.com</p>
+                        <p class="mb-2"><i class="fas fa-phone me-2"></i>+84 123 456 789</p>
+                        <p class="mb-0"><i class="fas fa-map-marker-alt me-2"></i>Hà Nội, Việt Nam</p>
+                    </div>
+                </div>
+                <hr class="my-4">
+                <div class="text-center">
+                    <p class="mb-0">&copy; 2025 PsychHealth. Mọi quyền được bảo lưu.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Vue.js 3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    
+    <!-- Main Application -->
+    <script src="js/app.js"></script>
+</body>
+</html>
