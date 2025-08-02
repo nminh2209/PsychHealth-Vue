@@ -365,46 +365,7 @@ Backend Structure:
 
 ---
 
-## 🏆 Grade Justification for HD
 
-### HD Criteria Fulfillment
-
-1. **Exceptional Technical Implementation** ✅
-   - Advanced Vue.js 3 features with reactive programming
-   - Secure authentication with JWT tokens
-   - Professional database design and optimization
-   - Innovative solution to external API challenges
-
-2. **Comprehensive Functionality** ✅
-   - 6 standardized mental health assessments
-   - Complete social community platform
-   - Professional crisis support integration
-   - Advanced content management system
-
-3. **Professional Quality** ✅
-   - Evidence-based mental health resources
-   - Healthcare-appropriate design and content
-   - Comprehensive security implementation
-   - Production-ready code quality
-
-4. **Innovation and Problem-Solving** ✅
-   - Creative solution to external API reliability issues
-   - Advanced local content generation system
-   - Seasonal weather mood calculation
-   - Professional-grade user experience
-
-5. **Documentation and Presentation** ✅
-   - Comprehensive technical documentation
-   - Clear code organization and commenting
-   - Professional project presentation
-   - Complete feature demonstration
-
-### Advanced Features Demonstrating HD Level
-- **Dynamic Content Generation**: Sophisticated algorithm for daily mental health tips
-- **Evidence-Based Integration**: Professional psychological resources with citations
-- **Security Excellence**: Token-based authentication with database validation
-- **Performance Optimization**: Efficient data management and user experience
-- **Professional Standards**: Healthcare-appropriate design and functionality
 
 ---
 
@@ -446,20 +407,7 @@ Backend Structure:
 
 ---
 
-## 📞 Contact & Support
-
-**Developer**: [Your Name]  
-**Email**: [Your Email]  
-**Course**: COS30043 - Interface Innovation  
-**Institution**: [Your University]  
-
-**Project Repository**: [GitHub Link if applicable]  
-**Live Demo**: [Deployment URL if applicable]  
-
----
-
-**Project Completion Date**: August 2, 2025  
-**Final Status**: ✅ Complete and Ready for HD Assessment  
+ 
 **Total Development Time**: [Estimated hours]  
 **Lines of Code**: ~1,800+ (Frontend + Backend)
 
